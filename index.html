@@ -193,7 +193,7 @@
   .photo-frame figcaption .ps{color:var(--accent)}
 
   /* ---------- METRICS BAND ---------- */
-  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
   .metric{
     border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
     padding:24px 20px;position:relative;overflow:hidden;
@@ -432,8 +432,8 @@
   <div class="about-grid">
     <div class="about">
       <p>I'm a threat intelligence analyst and red team operator who works the full arc — from <b>passive reconnaissance and adversary profiling</b> to <b>finished, audience-tuned intelligence products</b> for technical analysts and executive leadership alike.</p>
-      <p>At Sony I'm part of the <b>global CTI team</b> that serves the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring; I manage HackerOne vulnerability disclosure and bug bounty for four operating companies and act as the team's <span class="accent">Cortex XSOAR automation lead</span>, building playbooks and Flask intranet tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic.</p>
-      <p>Outside the day job I build offensive-security tooling with LLMs at the core — an adaptive C2 decision engine, an AI-driven SSH honeypot — and I've competed at the top of the collegiate circuit, taking <b>1st place globally at CPTC 2023</b>. I'm pursuing my <b>M.S. in Cybersecurity at Georgia Tech</b>.</p>
+      <p>At Sony I'm part of the <b>global CTI team</b> that serves the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring; I manage HackerOne vulnerability disclosure and bug bounty across multiple operating companies and act as the team's <span class="accent">Cortex XSOAR automation lead</span>, building playbooks and Flask intranet tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic.</p>
+      <p>Outside the day job I build security tooling with LLMs at the core — a context-aware C2 beacon detector, an AI-driven SSH honeypot — and I've competed at the top of the collegiate circuit, taking <b>1st place globally at CPTC 2023</b>. I'm pursuing my <b>M.S. in Cybersecurity at Georgia Tech</b>.</p>
     </div>
     <div class="about-aside">
       <figure class="photo-frame">
@@ -473,10 +473,6 @@
       <div class="num">90<span class="u">%</span></div>
       <div class="lab">of C2 IP traffic blocked through automated detection &amp; enrichment pipelines</div>
     </div>
-    <div class="metric">
-      <div class="num">5</div>
-      <div class="lab">Sony operating companies the CTI team serves as distinct clients</div>
-    </div>
   </div>
 </section>
 
@@ -495,7 +491,7 @@
         <div class="role-line"><span class="rt">Associate Engineer, Cyber Threat Intelligence <span class="badge-now">NOW</span></span><span class="rw">Feb 2025 — Present · 1 yr 4 mos</span></div>
         <div class="role-line"><span class="rt">Intern, Cyber Threat Intelligence</span><span class="rw">May 2023 — Feb 2025 · 1 yr 10 mos</span></div>
       </div>
-      <p class="sum">Part of Sony's <b>global CTI team</b> serving the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure, profiling threat actors, and briefing CISOs during active incidents. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring. As <span class="accent">automation lead and Cortex XSOAR SME</span>, I built playbooks and Flask tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic, and manage HackerOne bug bounty across four operating companies. Grew into the role from an intern who built the CrowdStrike→ThreatConnect threat-actor prioritization dashboard, ran Shodan-based exposure discovery, and authored phishing-trends reporting with Splunk SPL and Proofpoint.</p>
+      <p class="sum">Part of Sony's <b>global CTI team</b> serving the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure, profiling threat actors, and briefing CISOs during active incidents. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring. As <span class="accent">automation lead and Cortex XSOAR SME</span>, I built playbooks and Flask tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic, and manage HackerOne bug bounty across multiple operating companies. Grew into the role from an intern who built the CrowdStrike→ThreatConnect threat-actor prioritization dashboard, ran Shodan-based exposure discovery, and authored phishing-trends reporting with Splunk SPL and Proofpoint.</p>
       <div class="job-tools"><span>Cortex XSOAR</span><span>MITRE ATT&amp;CK</span><span>ThreatConnect</span><span>CrowdStrike</span><span>HackerOne</span><span>Flask</span></div>
     </div>
 
@@ -574,15 +570,15 @@
       </div>
     </article>
 
-    <article class="proj redteam">
-      <div class="proj-tab mono"><span class="fname">callback_engine<span class="dotpy">.py</span></span><span class="tag redteam">RED TEAM</span></div>
+    <article class="proj">
+      <div class="proj-tab mono"><span class="fname">beacon_detection<span class="dotpy">.py</span></span><span class="tag">DETECTION</span></div>
       <div class="proj-body">
-        <h3>Adaptive Callback Decision Engine</h3>
-        <p>AI-driven C2 callback decision engine that uses Microsoft Graph API and Azure AD telemetry to dynamically adjust beacon behavior to real-time environment context for OPSEC-aware timing. Integrates local Ollama inference and MITRE ATT&CK techniques (T1547, T1053, T1005) to model long-dwell intrusion behavior and inform defensive detection.</p>
+        <h3>Long-Dwell Beacon Detection</h3>
+        <p>Detection-research project testing whether defender-side context — user sign-in rhythms, audit events, and host-activity baselines from Entra/Graph — improves detection of intermittent, low-and-slow C2 callbacks over host-telemetry-only methods. Compares a RITA-style periodicity baseline against an isolation-forest model on combined host+context features, with a Claude-assisted triage layer that cites the specific events behind every observation. Detection-only — no implants or C2 operated.</p>
         <div class="stack">
-          <span class="chip">Python</span><span class="chip">Flask</span><span class="chip">MS Graph</span><span class="chip">Azure AD</span><span class="chip">Ollama</span>
+          <span class="chip">Python</span><span class="chip">Sysmon</span><span class="chip">Entra / MS Graph</span><span class="chip">Zeek / RITA</span><span class="chip">scikit-learn</span>
         </div>
-        <a class="proj-link mono" href="https://github.com/JPen8899/adaptive-callback-decision-engine" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
+        <a class="proj-link mono" href="https://github.com/JPen8899/long-dwell-beacon-detection" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
       </div>
     </article>
 
