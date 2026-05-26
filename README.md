@@ -30,6 +30,5 @@ For a custom domain, add a `CNAME` file with the domain and point your DNS at Gi
 
 ## Source
 
-Content is drawn from the master resume (`../JimmyPengMaster.pdf`). To update the site,
-edit the relevant section in `index.html` directly — sections are clearly commented
-(`<!-- EXPERIENCE -->`, `<!-- PROJECTS -->`, etc.).
+To update the site, edit the relevant section in `index.html` directly — sections are
+clearly commented (`<!-- EXPERIENCE -->`, `<!-- PROJECTS -->`, etc.).
