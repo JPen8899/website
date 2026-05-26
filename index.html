@@ -433,7 +433,7 @@
     <div class="about">
       <p>I'm a threat intelligence analyst and red team operator who works the full arc — from <b>passive reconnaissance and adversary profiling</b> to <b>finished, audience-tuned intelligence products</b> for technical analysts and executive leadership alike.</p>
       <p>At Sony I'm part of the <b>global CTI team</b> that serves the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring; I manage HackerOne vulnerability disclosure and bug bounty across multiple operating companies and act as the team's <span class="accent">Cortex XSOAR automation lead</span>, building playbooks and Flask intranet tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic.</p>
-      <p>Outside the day job I build security tooling with LLMs at the core — a context-aware C2 beacon detector, an AI-driven SSH honeypot — and I've competed at the top of the collegiate circuit, taking <b>1st place globally at CPTC 2023</b>. I'm pursuing my <b>M.S. in Cybersecurity at Georgia Tech</b>.</p>
+      <p>Outside the day job I build security tooling with LLMs at the core — an AI-driven SSH honeypot — and I've competed at the top of the collegiate circuit, taking <b>1st place globally at CPTC 2023</b>. I'm pursuing my <b>M.S. in Cybersecurity at Georgia Tech</b>.</p>
     </div>
     <div class="about-aside">
       <figure class="photo-frame">
@@ -554,7 +554,7 @@
   <div class="sec-head">
     <span class="cmd mono"><span class="ps">$</span> ls <span class="arg">~/projects</span></span>
     <h2>// selected projects</h2>
-    <span class="count mono">3 repos</span>
+    <span class="count mono">2 repos</span>
   </div>
   <div class="proj-grid">
 
@@ -567,18 +567,6 @@
           <span class="chip">Python</span><span class="chip">Anthropic API</span><span class="chip">Docker</span>
         </div>
         <a class="proj-link mono" href="https://github.com/JPen8899/AIHoneyPot" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
-      </div>
-    </article>
-
-    <article class="proj">
-      <div class="proj-tab mono"><span class="fname">beacon_detection<span class="dotpy">.py</span></span><span class="tag">DETECTION</span></div>
-      <div class="proj-body">
-        <h3>Long-Dwell Beacon Detection</h3>
-        <p>Detection-research project testing whether defender-side context — user sign-in rhythms, audit events, and host-activity baselines from Entra/Graph — improves detection of intermittent, low-and-slow C2 callbacks over host-telemetry-only methods. Compares a RITA-style periodicity baseline against an isolation-forest model on combined host+context features, with a Claude-assisted triage layer that cites the specific events behind every observation. Detection-only — no implants or C2 operated.</p>
-        <div class="stack">
-          <span class="chip">Python</span><span class="chip">Sysmon</span><span class="chip">Entra / MS Graph</span><span class="chip">Zeek / RITA</span><span class="chip">scikit-learn</span>
-        </div>
-        <a class="proj-link mono" href="https://github.com/JPen8899/long-dwell-beacon-detection" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
       </div>
     </article>
 
