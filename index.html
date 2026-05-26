@@ -1,9 +1,832 @@
 <!DOCTYPE html>
-<html>
-  <head></head>>
-    <script>
-      window.location.replace("sites/home.html")
+<!--
+  ARCHETYPE: "Operator terminal" — dark phosphor-green CRT/console aesthetic for an
+  offensive-security & threat-intelligence professional. Committed hard to the family:
+  IBM Plex Mono for all UI/labels/headings, IBM Plex Sans for long-form readability.
 
-    </script>
-  </body>
+  STRUCTURAL DECISIONS
+  - Hero is a real terminal window (traffic-light chrome, prompt, typewriter `whoami`),
+    not a centered stock-photo hero. CTAs are bracketed mono buttons.
+  - Section headers are shell prompts ($ cat experience.log) — the nav doubles as a
+    command palette. No three-column icon grids.
+  - Experience is a left-ruled timeline; projects are bordered "source file" cards with
+    a filename tab; skills are categorized mono blocks; a metrics band carries the
+    quantified wins from the resume.
+  - ANIMATION: ONE approach — hero typewriter + blinking caret only. Everything else is
+    static with deliberate hover states. Respects prefers-reduced-motion.
+  - Palette: dark navy #0a0f1a, azure-blue #6ea8ff primary accent, amber #f5b87a
+    for prompt glyphs, muted slate-blues for body text. Single accent, used with discipline.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jimmy Peng — Cyber Threat Intelligence & Red Team Operator</title>
+<meta name="description" content="Jimmy Peng — Associate Engineer, Cyber Threat Intelligence at Sony. OSCP+, CRTO. Threat-actor profiling, red team operations, and security automation.">
+<meta name="author" content="Jimmy Peng">
+<meta property="og:title" content="Jimmy Peng — Cyber Threat Intelligence & Red Team Operator">
+<meta property="og:description" content="Threat intelligence analyst & red team operator. OSCP+, CRTO, CCNA, AWS, Security+. CPTC global champion.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0f1a;
+    --bg-raise:#0d1626;
+    --panel:#101a2e;
+    --line:#1e2b44;
+    --line-soft:#16203a;
+    --text:#c3d1e6;
+    --text-dim:#7e8da8;
+    --text-faint:#586882;
+    --accent:#6ea8ff;        /* azure blue */
+    --accent-deep:#3b82f6;
+    --amber:#f5b87a;         /* warm prompt glyph / secondary */
+    --white:#eaf1fb;
+    /* credential category colors */
+    --c-red:#f2777a;         /* offensive / red team */
+    --c-net:#5cc8ff;         /* networking */
+    --c-cloud:#f0b46a;       /* cloud */
+    --c-green:#5fd0a0;       /* foundational / defensive */
+    --maxw:1080px;
+    --r:4px;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"IBM Plex Sans",system-ui,sans-serif;
+    font-size:16.5px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  /* faint engineering grid + vignette, fixed, very low contrast */
+  body::before{
+    content:"";
+    position:fixed;inset:0;z-index:0;pointer-events:none;
+    background-image:
+      linear-gradient(var(--line-soft) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line-soft) 1px,transparent 1px);
+    background-size:64px 64px;
+    opacity:.35;
+    mask-image:radial-gradient(circle at 50% 30%,#000 0%,transparent 78%);
+    -webkit-mask-image:radial-gradient(circle at 50% 30%,#000 0%,transparent 78%);
+  }
+  .wrap{position:relative;z-index:1;max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  a{color:inherit;text-decoration:none}
+  .mono{font-family:"IBM Plex Mono",ui-monospace,monospace}
+  ::selection{background:var(--accent);color:#05101f}
+
+  /* ---------- NAV ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:40;
+    background:rgba(10,15,26,.82);
+    backdrop-filter:blur(9px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:60px}
+  .brand{font-family:"IBM Plex Mono";font-weight:600;letter-spacing:.02em;color:var(--white);font-size:15px}
+  .brand .caret{color:var(--accent)}
+  .nav-links{display:flex;gap:26px;font-family:"IBM Plex Mono";font-size:13.5px}
+  .nav-links a{color:var(--text-dim);transition:color .15s}
+  .nav-links a::before{content:"/ ";color:var(--text-faint)}
+  .nav-links a:hover{color:var(--accent)}
+  .nav-toggle{display:none}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:74px 0 30px}
+  .term{
+    border:1px solid var(--line);
+    border-radius:var(--r);
+    background:linear-gradient(180deg,var(--bg-raise),#0a1120);
+    box-shadow:0 30px 80px -40px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.02);
+    overflow:hidden;
+  }
+  .term-bar{
+    display:flex;align-items:center;gap:8px;
+    padding:11px 15px;border-bottom:1px solid var(--line);
+    background:#0c1626;
+  }
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block}
+  .dot.r{background:#e0564f}.dot.y{background:#e0a84f}.dot.g{background:#5fc36a}
+  .term-title{margin-left:10px;font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-faint)}
+  .term-body{padding:34px clamp(20px,4vw,46px) 42px}
+  .prompt-line{font-family:"IBM Plex Mono";font-size:14px;color:var(--text-dim);margin:0 0 18px}
+  .prompt-line .ps{color:var(--accent)}
+  .prompt-line .path{color:var(--amber)}
+  .typed{color:var(--white)}
+  h1{
+    font-family:"IBM Plex Mono";font-weight:700;
+    font-size:clamp(34px,6.4vw,62px);line-height:1.02;letter-spacing:-.01em;
+    margin:6px 0 8px;color:var(--white);
+  }
+  .role{
+    font-family:"IBM Plex Mono";font-size:clamp(14px,2.3vw,18px);
+    color:var(--accent);margin:0 0 26px;font-weight:500;letter-spacing:.01em;
+  }
+  .role .sep{color:var(--text-faint);margin:0 8px}
+  .lede{max-width:62ch;color:var(--text);font-size:16.5px;margin:0 0 28px}
+  .lede b{color:var(--white);font-weight:600}
+  .caret-blink{
+    display:inline-block;width:9px;height:1.05em;translate:0 2px;
+    background:var(--accent);margin-left:3px;animation:blink 1.05s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0}}
+  .cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:6px}
+  .btn{
+    font-family:"IBM Plex Mono";font-size:13.5px;font-weight:500;
+    padding:11px 18px;border-radius:var(--r);border:1px solid var(--line);
+    color:var(--text);background:transparent;transition:.16s ease;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .btn .br{color:var(--text-faint);transition:color .16s}
+  .btn:hover{border-color:var(--accent);color:var(--white);transform:translateY(-1px)}
+  .btn:hover .br{color:var(--accent)}
+  .btn.primary{border-color:var(--accent-deep);color:var(--accent);background:rgba(110,168,255,.06)}
+  .btn.primary:hover{background:rgba(110,168,255,.14)}
+
+  .id-strip{
+    display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:30px;padding-top:22px;
+    border-top:1px solid var(--line-soft);
+    font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-dim);
+  }
+  .id-strip span b{color:var(--accent);font-weight:500}
+
+  /* ---------- SECTIONS ---------- */
+  section{padding:68px 0;border-top:1px solid var(--line-soft)}
+  .sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:38px;flex-wrap:wrap}
+  .sec-head .cmd{font-family:"IBM Plex Mono";font-size:14px;color:var(--text-dim)}
+  .sec-head .cmd .ps{color:var(--accent)}
+  .sec-head .cmd .arg{color:var(--white)}
+  .sec-head h2{
+    font-family:"IBM Plex Mono";font-size:clamp(22px,3.6vw,30px);font-weight:600;
+    color:var(--white);margin:0;letter-spacing:-.01em;
+  }
+  .sec-head .count{font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-faint);margin-left:auto}
+
+  .about-grid{display:grid;grid-template-columns:1.4fr .9fr;gap:46px;align-items:start}
+  .about p{margin:0 0 16px;max-width:60ch}
+  .about p b{color:var(--white);font-weight:600}
+  .about .accent{color:var(--accent)}
+  .sidecard{
+    border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+    padding:20px 22px;font-family:"IBM Plex Mono";font-size:13px;
+  }
+  .sidecard h3{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:var(--text-faint);margin:0 0 14px;font-weight:600}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line-soft)}
+  .kv:last-child{border-bottom:0}
+  .kv .k{color:var(--text-dim)}
+  .kv .v{color:var(--text);text-align:right}
+  .kv .v.hl{color:var(--accent)}
+  .about-aside{display:flex;flex-direction:column;gap:18px}
+  .photo-frame{margin:0;border:1px solid var(--line);border-radius:var(--r);background:var(--panel);overflow:hidden}
+  .photo-frame .bar{display:flex;align-items:center;gap:8px;padding:9px 13px;border-bottom:1px solid var(--line);background:#0c1626;font-family:"IBM Plex Mono";font-size:11.5px;color:var(--text-faint)}
+  .photo-frame .bar .fn{margin-left:6px}
+  .photo-frame img{display:block;width:100%;height:auto}
+  .photo-frame figcaption{font-family:"IBM Plex Mono";font-size:11px;color:var(--text-faint);padding:9px 13px;border-top:1px solid var(--line-soft)}
+  .photo-frame figcaption .ps{color:var(--accent)}
+
+  /* ---------- METRICS BAND ---------- */
+  .metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .metric{
+    border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+    padding:24px 20px;position:relative;overflow:hidden;
+  }
+  .metric::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--accent-deep);opacity:.6}
+  .metric .num{font-family:"IBM Plex Mono";font-size:34px;font-weight:700;color:var(--accent);line-height:1}
+  .metric .num .u{font-size:20px;color:var(--accent-deep)}
+  .metric .lab{margin-top:10px;font-size:13.5px;color:var(--text-dim);line-height:1.45}
+
+  /* ---------- EXPERIENCE TIMELINE (grouped by organization) ---------- */
+  .timeline{border-left:1px solid var(--line);margin-left:7px;padding-left:30px;display:flex;flex-direction:column;gap:46px}
+  .orggroup{position:relative}
+  .orggroup::before{
+    content:"";position:absolute;left:-37px;top:5px;width:13px;height:13px;border-radius:50%;
+    background:var(--bg);border:2px solid var(--accent-deep);
+  }
+  .orggroup.now::before{background:var(--accent);box-shadow:0 0 0 4px rgba(110,168,255,.14)}
+  .org-name{font-family:"IBM Plex Mono";font-size:19px;font-weight:600;color:var(--accent);letter-spacing:-.01em}
+  .org-meta{font-family:"IBM Plex Mono";font-size:12px;color:var(--text-faint);margin-top:3px}
+  .role-list{margin-top:16px;border-left:1px solid var(--line-soft);padding-left:18px;display:flex;flex-direction:column}
+  .role-line{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--line-soft)}
+  .role-line:last-child{border-bottom:0}
+  .role-line .rt{font-family:"IBM Plex Mono";font-size:14.5px;font-weight:600;color:var(--white)}
+  .role-line .rw{font-family:"IBM Plex Mono";font-size:12px;color:var(--text-faint);white-space:nowrap}
+  .badge-now{font-family:"IBM Plex Mono";font-size:10px;color:#05101f;background:var(--accent);padding:2px 7px;border-radius:3px;font-weight:600;letter-spacing:.04em;vertical-align:middle;margin-left:8px}
+  .sum{margin:11px 0 0;color:var(--text);font-size:15px;max-width:82ch;line-height:1.62}
+  .sum b{color:var(--white);font-weight:600}
+  .sum .accent{color:var(--accent)}
+  .sum .red,.red{color:var(--c-red)}
+  .job-tools{margin-top:11px;display:flex;flex-wrap:wrap;gap:7px}
+  .job-tools span{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--text-dim);border:1px solid var(--line);border-radius:3px;padding:3px 8px}
+
+  /* ---------- PROJECTS ---------- */
+  .proj-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+  .proj{
+    border:1px solid var(--line);border-radius:var(--r);background:var(--panel);
+    display:flex;flex-direction:column;transition:.18s ease;overflow:hidden;
+  }
+  .proj:hover{border-color:var(--accent-deep);transform:translateY(-3px);box-shadow:0 24px 50px -34px rgba(0,0,0,.85)}
+  .proj-tab{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:11px 16px;border-bottom:1px solid var(--line);background:#0c1626;
+    font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-faint);
+  }
+  .proj-tab .fname{color:var(--text-dim)}
+  .proj-tab .fname .dotpy{color:var(--accent)}
+  .proj-tab .tag{color:var(--amber);font-size:11px;letter-spacing:.03em}
+  .proj-tab .tag.redteam{color:var(--c-red)}
+  .proj.redteam:hover{border-color:var(--c-red)}
+  .proj.redteam:hover .proj-tab{border-bottom-color:var(--c-red)}
+  .proj-body{padding:20px 18px 18px;display:flex;flex-direction:column;flex:1}
+  .proj h3{font-family:"IBM Plex Mono";font-size:17px;font-weight:600;color:var(--white);margin:0 0 10px}
+  .proj p{margin:0 0 16px;font-size:15px;color:var(--text);flex:1}
+  .stack{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+  .chip{font-family:"IBM Plex Mono";font-size:11.5px;color:var(--text-dim);border:1px solid var(--line);border-radius:3px;padding:3px 8px}
+  .proj-link{font-family:"IBM Plex Mono";font-size:13px;color:var(--accent);display:inline-flex;align-items:center;gap:7px;align-self:flex-start;transition:gap .16s}
+  .proj-link:hover{gap:11px}
+  .proj-link .arrow{transition:transform .16s}
+
+  /* ---------- AWARDS ---------- */
+  .awards{display:flex;flex-direction:column;gap:0}
+  .award{
+    display:grid;grid-template-columns:auto 1fr auto;gap:22px;align-items:start;
+    padding:22px 0;border-bottom:1px solid var(--line-soft);
+  }
+  .award:last-child{border-bottom:0}
+  .medal-wrap{display:flex;flex-direction:column;align-items:center;gap:7px;width:66px;align-self:start}
+  .medal{position:relative;width:56px;height:56px;border-radius:50%;display:grid;place-items:center}
+  .medal::before{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--mc);background:var(--panel)}
+  .medal::after{content:"";position:absolute;inset:6px;border-radius:50%;border:1px solid var(--mc);opacity:.35}
+  .medal .pl{position:relative;z-index:1;font-family:"IBM Plex Mono";font-weight:700;font-size:19px;color:var(--mc);line-height:1;text-align:center}
+  .medal .pl small{display:block;font-size:8px;letter-spacing:.08em;margin-top:1px;font-weight:600}
+  .medal.gold{--mc:#e8c45e}
+  .medal.silver{--mc:#c2cbd8}
+  .medal.blue{--mc:var(--accent)}
+  .scope{font-family:"IBM Plex Mono";font-size:9.5px;color:var(--text-faint);letter-spacing:.05em;text-align:center;line-height:1.25}
+  .award h3{font-family:"IBM Plex Mono";font-size:16.5px;color:var(--white);margin:0 0 6px;font-weight:600}
+  .award p{margin:0;font-size:14.5px;color:var(--text-dim);max-width:72ch}
+  .award .yr{font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-faint);white-space:nowrap}
+
+  /* ---------- SKILLS ---------- */
+  .skills{display:grid;grid-template-columns:repeat(2,1fr);gap:20px}
+  .skillcard{border:1px solid var(--line);border-radius:var(--r);background:var(--panel);padding:20px 22px}
+  .skillcard h3{
+    font-family:"IBM Plex Mono";font-size:13px;color:var(--accent);margin:0 0 14px;font-weight:600;
+    display:flex;align-items:center;gap:8px;
+  }
+  .skillcard h3 .hash{color:var(--text-faint)}
+  .tags{display:flex;flex-wrap:wrap;gap:8px}
+  .tags span{
+    font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text);
+    border:1px solid var(--line);border-radius:3px;padding:4px 9px;transition:.15s;
+  }
+  .tags span:hover{border-color:var(--accent-deep);color:var(--accent)}
+
+  /* ---------- CERTS / EDU (badges) ---------- */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:start}
+  .col-label{font-family:"IBM Plex Mono";font-size:13px;color:var(--accent);margin:0 0 14px;font-weight:600}
+  .col-label .hash{color:var(--text-faint)}
+
+  /* color legend for cert categories */
+  .cert-legend{display:flex;flex-wrap:wrap;gap:7px 18px;margin:0 0 24px;font-family:"IBM Plex Mono";font-size:11px;color:var(--text-dim)}
+  .cert-legend span{display:inline-flex;align-items:center}
+  .cert-legend i{width:8px;height:8px;margin-right:7px;transform:rotate(45deg)}
+  .lg-off i{background:var(--c-red)}
+  .lg-net i{background:var(--c-net)}
+  .lg-cloud i{background:var(--c-cloud)}
+  .lg-gen i{background:var(--c-green)}
+
+  .cert-grid{display:flex;flex-direction:column;gap:14px}
+  .cbadge{display:flex;align-items:center;gap:14px;--cc:var(--accent)}
+  .cbadge.offensive{--cc:var(--c-red)}
+  .cbadge.network{--cc:var(--c-net)}
+  .cbadge.cloud{--cc:var(--c-cloud)}
+  .cbadge.general{--cc:var(--c-green)}
+  .hex{position:relative;width:52px;height:58px;flex:none}
+  .hex::before{content:"";position:absolute;inset:0;background:var(--cc);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+  .hex::after{content:"";position:absolute;inset:2px;background:var(--panel);clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%)}
+  .hex .ac{position:relative;z-index:1;display:grid;place-items:center;height:100%;font-family:"IBM Plex Mono";font-weight:700;font-size:12px;color:var(--cc);letter-spacing:-.02em}
+  .cbadge.prog .hex::before{opacity:.45}
+  .cbadge .nm{font-family:"IBM Plex Mono";font-size:14.5px;color:var(--white);font-weight:600;line-height:1.2}
+  .cbadge .iss{font-size:12.5px;color:var(--text-dim);margin-top:1px}
+  .cbadge .st{font-family:"IBM Plex Mono";font-size:10px;color:var(--cc);letter-spacing:.06em;margin-top:3px}
+  .cbadge.prog .st{color:var(--amber)}
+
+  .edu-list{display:flex;flex-direction:column;gap:22px}
+  .edu{display:flex;gap:15px;align-items:flex-start;margin:0}
+  .crest{flex:none;width:52px;height:52px;border-radius:11px;border:2px solid var(--accent-deep);background:var(--panel);display:grid;place-items:center;font-family:"IBM Plex Mono";font-weight:700;font-size:15px;color:var(--accent)}
+  .edu .school{font-family:"IBM Plex Mono";font-size:15.5px;color:var(--white);font-weight:600}
+  .edu .deg{color:var(--accent);font-size:14px;margin-top:2px}
+  .edu .when{font-family:"IBM Plex Mono";font-size:12px;color:var(--text-faint);margin-top:3px}
+  .edu .course{font-size:13px;color:var(--text-dim);margin-top:7px;max-width:46ch}
+  .edu .course b{color:var(--text)}
+
+  /* ---------- CONTACT ---------- */
+  .contact{padding-bottom:40px}
+  .contact-term{border:1px solid var(--line);border-radius:var(--r);background:var(--bg-raise);overflow:hidden}
+  .contact-body{padding:30px clamp(20px,4vw,40px) 34px;font-family:"IBM Plex Mono"}
+  .contact-body .ln{margin:0 0 8px;color:var(--text-dim);font-size:14px}
+  .contact-body .ln .ps{color:var(--accent)}
+  .contact-body .out{color:var(--white);font-size:14px;margin:0 0 4px}
+  .contact-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:24px}
+  .contact-cta a{
+    font-family:"IBM Plex Mono";font-size:13.5px;padding:11px 18px;border-radius:var(--r);
+    border:1px solid var(--line);color:var(--text);transition:.16s;display:inline-flex;gap:8px;align-items:center;
+  }
+  .contact-cta a:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .contact-cta a .g{color:var(--text-faint)}
+  .contact-cta a:hover .g{color:var(--accent)}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);padding:30px 0 50px;position:relative;z-index:1}
+  .foot-inner{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-family:"IBM Plex Mono";font-size:12.5px;color:var(--text-faint)}
+  .foot-inner a{color:var(--text-dim)}
+  .foot-inner a:hover{color:var(--accent)}
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:860px){
+    .about-grid,.two-col{grid-template-columns:1fr;gap:30px}
+    .metrics{grid-template-columns:repeat(2,1fr)}
+    .proj-grid,.skills{grid-template-columns:1fr}
+  }
+  @media (max-width:620px){
+    body{font-size:16px}
+    .nav-links{display:none}
+    .nav-links.open{display:flex;position:absolute;top:60px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg-raise);border-bottom:1px solid var(--line);padding:6px 28px 14px}
+    .nav-links.open a{padding:10px 0;border-bottom:1px solid var(--line-soft)}
+    .nav-toggle{display:inline-flex;background:none;border:1px solid var(--line);border-radius:var(--r);color:var(--accent);font-family:"IBM Plex Mono";font-size:13px;padding:6px 12px;cursor:pointer}
+    .award{grid-template-columns:auto 1fr;gap:14px}
+    .award .yr{grid-column:2;margin-top:4px}
+    .metric .num{font-size:28px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none !important;transition:none !important;scroll-behavior:auto !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand"><span class="caret">$</span> jimmy_peng</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">menu</button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about">about</a>
+      <a href="#experience">experience</a>
+      <a href="#projects">projects</a>
+      <a href="#awards">awards</a>
+      <a href="#skills">skills</a>
+      <a href="#contact">contact</a>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<a id="top"></a>
+<div class="hero">
+  <div class="wrap">
+    <div class="term">
+      <div class="term-bar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="term-title">jimmy@peng: ~/profile — zsh</span>
+      </div>
+      <div class="term-body">
+        <p class="prompt-line mono"><span class="ps">jimmy@peng</span>:<span class="path">~</span>$ <span class="typed" id="typed"></span><span class="caret-blink" id="caret"></span></p>
+        <h1>Jimmy Peng</h1>
+        <p class="role mono">Cyber Threat Intelligence<span class="sep">·</span>Red Team Operator<span class="sep">·</span>Security Automation</p>
+        <p class="lede">I turn raw telemetry and adversary behavior into <b>finished intelligence</b> and working defenses. Currently an <b>Associate Engineer on Sony's global Cyber Threat Intelligence team</b> — serving Sony's operating companies as distinct clients, profiling threat actors, and automating the work that used to take analysts days.</p>
+        <div class="cta">
+          <a href="#experience" class="btn primary mono"><span class="br">&gt;</span> view_experience</a>
+          <a href="#projects" class="btn mono"><span class="br">[</span> projects <span class="br">]</span></a>
+          <a href="#contact" class="btn mono"><span class="br">[</span> contact <span class="br">]</span></a>
+        </div>
+        <div class="id-strip mono">
+          <span><b>OSCP+</b></span>
+          <span><b>CRTO</b></span>
+          <span><b>CCNA</b></span>
+          <span><b>AWS CCP</b></span>
+          <span><b>Security+</b></span>
+          <span>U.S. Citizen · Clearance-Eligible</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> cat <span class="arg">about.md</span></span>
+    <h2>// whoami</h2>
+  </div>
+  <div class="about-grid">
+    <div class="about">
+      <p>I'm a threat intelligence analyst and red team operator who works the full arc — from <b>passive reconnaissance and adversary profiling</b> to <b>finished, audience-tuned intelligence products</b> for technical analysts and executive leadership alike.</p>
+      <p>At Sony I'm part of the <b>global CTI team</b> that serves the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring; I manage HackerOne vulnerability disclosure and bug bounty for four operating companies and act as the team's <span class="accent">Cortex XSOAR automation lead</span>, building playbooks and Flask intranet tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic.</p>
+      <p>Outside the day job I build offensive-security tooling with LLMs at the core — an adaptive C2 decision engine, an AI-driven SSH honeypot — and I've competed at the top of the collegiate circuit, taking <b>1st place globally at CPTC 2023</b>. I'm pursuing my <b>M.S. in Cybersecurity at Georgia Tech</b>.</p>
+    </div>
+    <div class="about-aside">
+      <figure class="photo-frame">
+        <div class="bar mono"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span><span class="fn">jimmy-peng.jpg</span></div>
+        <img src="jimmy-peng.jpg" alt="Portrait of Jimmy Peng" width="644" height="644" loading="lazy">
+        <figcaption><span class="ps">$</span> file jimmy-peng.jpg → JPEG · portrait</figcaption>
+      </figure>
+      <aside class="sidecard mono">
+        <h3>// status</h3>
+        <div class="kv"><span class="k">role</span><span class="v">Assoc. Engineer, CTI</span></div>
+        <div class="kv"><span class="k">org</span><span class="v hl">Sony, Global</span></div>
+        <div class="kv"><span class="k">focus</span><span class="v">CTI · Red Team · OSINT</span></div>
+        <div class="kv"><span class="k">grad_school</span><span class="v">Georgia Tech, MS</span></div>
+        <div class="kv"><span class="k">clearance</span><span class="v hl">eligible</span></div>
+        <div class="kv"><span class="k">in_progress</span><span class="v">OSEP</span></div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- METRICS -->
+<section id="impact">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> ./impact <span class="arg">--summary</span></span>
+    <h2>// by the numbers</h2>
+  </div>
+  <div class="metrics">
+    <div class="metric">
+      <div class="num">~350</div>
+      <div class="lab">adversary profiles in a threat-actor database built from scratch, mapped to MITRE ATT&CK</div>
+    </div>
+    <div class="metric">
+      <div class="num">95<span class="u">%</span></div>
+      <div class="lab">of threat-actor profiling automated via Cortex XSOAR playbooks &amp; Flask tooling</div>
+    </div>
+    <div class="metric">
+      <div class="num">90<span class="u">%</span></div>
+      <div class="lab">of C2 IP traffic blocked through automated detection &amp; enrichment pipelines</div>
+    </div>
+    <div class="metric">
+      <div class="num">5</div>
+      <div class="lab">Sony operating companies the CTI team serves as distinct clients</div>
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> cat <span class="arg">experience.log</span></span>
+    <h2>// experience</h2>
+  </div>
+  <div class="timeline">
+
+    <div class="orggroup now">
+      <div class="org-name">Sony, Global</div>
+      <div class="org-meta">Cyber Threat Intelligence · 3 yrs 1 mo</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Associate Engineer, Cyber Threat Intelligence <span class="badge-now">NOW</span></span><span class="rw">Feb 2025 — Present · 1 yr 4 mos</span></div>
+        <div class="role-line"><span class="rt">Intern, Cyber Threat Intelligence</span><span class="rw">May 2023 — Feb 2025 · 1 yr 10 mos</span></div>
+      </div>
+      <p class="sum">Part of Sony's <b>global CTI team</b> serving the company's subsidiaries and operating companies as distinct clients — analyzing each one's specific exposure, profiling threat actors, and briefing CISOs during active incidents. The team operates the <span class="accent">global blocklist protecting every Sony company</span> and runs brand-takedown and dark-web/DLS monitoring. As <span class="accent">automation lead and Cortex XSOAR SME</span>, I built playbooks and Flask tooling that automated ~95% of threat-actor profiling and feed the blocklist that stops ~90% of C2 traffic, and manage HackerOne bug bounty across four operating companies. Grew into the role from an intern who built the CrowdStrike→ThreatConnect threat-actor prioritization dashboard, ran Shodan-based exposure discovery, and authored phishing-trends reporting with Splunk SPL and Proofpoint.</p>
+      <div class="job-tools"><span>Cortex XSOAR</span><span>MITRE ATT&amp;CK</span><span>ThreatConnect</span><span>CrowdStrike</span><span>HackerOne</span><span>Flask</span></div>
+    </div>
+
+    <div class="orggroup now">
+      <div class="org-name">LJ Sites</div>
+      <div class="org-meta">Co-founded web studio · Los Angeles · 2026 — Present</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Co-Founder &amp; Engineer <span class="badge-now" style="background:var(--amber)">FOUNDER</span></span><span class="rw">2026 — Present</span></div>
+      </div>
+      <p class="sum">Co-founded a two-person LA studio that builds websites for California small businesses that don't have one — shipping live, hand-tuned mockups speculatively, before any commitment (<b>25+ sites shipped, ~3 days</b> from discovery to live). Built the end-to-end <span class="accent">Python automation pipeline</span> — discovering businesses via the Google Places API, generating self-contained responsive sites from real business data with LLM-driven design, and publishing to GitHub Pages with SSL/CDN.</p>
+      <div class="job-tools"><span>Python</span><span>Google Places API</span><span>Anthropic API</span><span>GitHub Pages</span><span>HTML / CSS / JS</span></div>
+    </div>
+
+    <div class="orggroup">
+      <div class="org-name">Skull Games Solutions</div>
+      <div class="org-meta">OSINT · Jul 2025 — Jan 2026</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Open-Source Intelligence Analyst</span><span class="rw">Jul 2025 — Jan 2026 · 7 mos</span></div>
+      </div>
+      <p class="sum">Ran structured OSINT investigations for a <b>volunteer law-enforcement support task force</b> — building target profiles from correlated public data under strict OPSEC, and delivering actionable leads to law-enforcement partners ahead of interdiction.</p>
+    </div>
+
+    <div class="orggroup">
+      <div class="org-name">Students With an Interest in the Future of Technology (S.W.I.F.T.)</div>
+      <div class="org-meta">Cal Poly Pomona · student cybersecurity org · 4 yrs 1 mo</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Mentor</span><span class="rw">2024 — Sep 2025 · 1 yr 9 mos</span></div>
+        <div class="role-line"><span class="rt">Vice President of Operations</span><span class="rw">Jun 2023 — Feb 2024 · 9 mos</span></div>
+        <div class="role-line"><span class="rt">Intern</span><span class="rw">Apr 2022 — Jun 2023 · 1 yr 3 mos</span></div>
+        <div class="role-line"><span class="rt">Member</span><span class="rw">Sep 2021 — Apr 2022 · 8 mos</span></div>
+      </div>
+      <p class="sum">Progressed from <b>member → intern → VP of Operations → alumni mentor</b> over four years. As VP, led a three-person board running weekly meetings, labs, and competitions — coordinating Red vs. Blue events (red-teaming with Mythic and Sliver C2 against competitors' Active Directory environments) and building a <b>Go scoring engine</b> for a King-of-the-Hill purple-team competition. Earlier built vulnerable Windows/Linux machines and phishing infrastructure, led workshops across penetration testing, OSINT, and system administration, and mentored members on offensive and defensive security.</p>
+      <div class="job-tools"><span>Mythic C2</span><span>Sliver</span><span>Go</span><span>Active Directory</span><span>VMware ESXi</span></div>
+    </div>
+
+    <div class="orggroup">
+      <div class="org-name">Cal Poly Pomona — Security Operations Center</div>
+      <div class="org-meta">Student SOC · Nov 2022 — Feb 2023</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Senior Analyst, Security Operations Center</span><span class="rw">Nov 2022 — Feb 2023 · 4 mos</span></div>
+      </div>
+      <p class="sum">Helped build the university SOC on <b>Red Hat Enterprise Linux and Windows</b> for incident-response readiness, and led SOC tours for auditors.</p>
+    </div>
+
+    <div class="orggroup">
+      <div class="org-name">Hi-Grade Supply Co.</div>
+      <div class="org-meta">Clearlake, CA · 2020</div>
+      <div class="role-list">
+        <div class="role-line"><span class="rt">Technical Support</span><span class="rw">Jan 2020 — Aug 2020 · 8 mos</span></div>
+      </div>
+      <p class="sum">Provided technical support and network setup — installing and configuring <b>Fortinet firewalls</b>, wireless access points, and FortiClient VPN; running and testing Ethernet cabling; and standing up workstations and mobile devices. Implemented certificate-based Wi-Fi authentication and audited the wireless network for signal bleeding, coordinating with ISPs and Fortinet to keep the network secure and reliable.</p>
+      <div class="job-tools"><span>Fortinet FortiGate</span><span>FortiClient VPN</span><span>Wi-Fi / 802.1X</span><span>Structured Cabling</span></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> ls <span class="arg">~/projects</span></span>
+    <h2>// selected projects</h2>
+    <span class="count mono">3 repos</span>
+  </div>
+  <div class="proj-grid">
+
+    <article class="proj">
+      <div class="proj-tab mono"><span class="fname">ai_ssh_honeypot<span class="dotpy">.py</span></span><span class="tag">DECEPTION</span></div>
+      <div class="proj-body">
+        <h3>AI SSH Honeypot</h3>
+        <p>LLM-driven SSH honeypot that lures attackers into a Claude-generated Fortune-100 enterprise shell, scores each session's sophistication by command TTP tier, and adapts the environment to maximize dwell time — surfacing live sessions, per-command scoring, and geolocated source-IP attribution on an operator dashboard.</p>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">Anthropic API</span><span class="chip">Docker</span>
+        </div>
+        <a class="proj-link mono" href="https://github.com/JPen8899/AIHoneyPot" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+    <article class="proj redteam">
+      <div class="proj-tab mono"><span class="fname">callback_engine<span class="dotpy">.py</span></span><span class="tag redteam">RED TEAM</span></div>
+      <div class="proj-body">
+        <h3>Adaptive Callback Decision Engine</h3>
+        <p>AI-driven C2 callback decision engine that uses Microsoft Graph API and Azure AD telemetry to dynamically adjust beacon behavior to real-time environment context for OPSEC-aware timing. Integrates local Ollama inference and MITRE ATT&CK techniques (T1547, T1053, T1005) to model long-dwell intrusion behavior and inform defensive detection.</p>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">Flask</span><span class="chip">MS Graph</span><span class="chip">Azure AD</span><span class="chip">Ollama</span>
+        </div>
+        <a class="proj-link mono" href="https://github.com/JPen8899/adaptive-callback-decision-engine" target="_blank" rel="noopener">view source <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+    <article class="proj">
+      <div class="proj-tab mono"><span class="fname">phish_detect<span class="dotpy">.py</span></span><span class="tag">🏆 1ST — BRONCOHACKS</span></div>
+      <div class="proj-body">
+        <h3>AI-Powered Phishing Detection Engine</h3>
+        <p>1st place at Cal Poly Pomona's BroncoHacks 2024. Real-time phishing detection using the OpenAI API as a multi-factor decision engine — analyzing URLs, email headers, and message content against indicators (sender spoofing, homoglyph domains, social-engineering language, mismatched anchor text) and outputting a quantified malicious-confidence score with per-indicator reasoning.</p>
+        <div class="stack">
+          <span class="chip">Python</span><span class="chip">OpenAI API</span><span class="chip">Tkinter</span>
+        </div>
+        <a class="proj-link mono" href="https://github.com/JPen8899" target="_blank" rel="noopener">view github <span class="arrow">→</span></a>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section id="awards">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> cat <span class="arg">awards.log</span></span>
+    <h2>// competition record</h2>
+  </div>
+  <div class="awards">
+    <div class="award">
+      <div class="medal-wrap">
+        <div class="medal gold"><span class="pl">1<small>ST</small></span></div>
+        <span class="scope">GLOBAL</span>
+      </div>
+      <div>
+        <h3>Collegiate Penetration Testing Competition (CPTC)</h3>
+        <p>1st place globally in the Championship Round and 1st in the Western Regional. Pentested enterprise Windows/Linux Active Directory environments — exploiting AD misconfigurations and web/network/wireless vulns with Mythic, Metasploit, Nmap, BloodHound, and Burp Suite — and produced executive-facing technical findings and business-impact assessments.</p>
+      </div>
+      <span class="yr mono">2023</span>
+    </div>
+    <div class="award">
+      <div class="medal-wrap">
+        <div class="medal silver"><span class="pl">2<small>ND</small></span></div>
+        <span class="scope">NATIONAL</span>
+      </div>
+      <div>
+        <h3>Collegiate Cyber Defense Competition (CCDC)</h3>
+        <p>2nd place nationally; 1st in the Western Regional and Western Regional Wildcard rounds. Administered and hardened Linux infrastructure against live red-team attacks — automating firewall enforcement, asset inventory, and vulnerability scanning, and running internal pentests to remediate findings before exploitation.</p>
+      </div>
+      <span class="yr mono">2023</span>
+    </div>
+    <div class="award">
+      <div class="medal-wrap">
+        <div class="medal gold"><span class="pl">1<small>ST</small></span></div>
+        <span class="scope">GLOBAL</span>
+      </div>
+      <div>
+        <h3>HiveStorm Competition</h3>
+        <p>1st place globally through systematic hardening of Linux systems against simulated attack scenarios.</p>
+      </div>
+      <span class="yr mono">2022</span>
+    </div>
+    <div class="award">
+      <div class="medal-wrap">
+        <div class="medal blue"><span class="pl">★</span></div>
+        <span class="scope">COMPETED</span>
+      </div>
+      <div>
+        <h3>National Centers of Academic Excellence in Cybersecurity (NCAE)</h3>
+        <p>Built secure FTP service configurations on Linux distributions while defending against an active red team, and answered capture-the-flag questions on security principles and the competition environment's infrastructure.</p>
+      </div>
+      <span class="yr mono">2021</span>
+    </div>
+    <div class="award">
+      <div class="medal-wrap">
+        <div class="medal blue"><span class="pl">★</span></div>
+        <span class="scope">COMPETED</span>
+      </div>
+      <div>
+        <h3>TraceLabs — Global OSINT Search Party</h3>
+        <p>Competed in TraceLabs Global OSINT Search Party events, running open-source intelligence investigations to surface actionable leads on real missing-persons cases.</p>
+      </div>
+      <span class="yr mono">Apr–Nov 2025</span>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> ./skills <span class="arg">--list</span></span>
+    <h2>// arsenal</h2>
+  </div>
+  <div class="skills">
+    <div class="skillcard">
+      <h3><span class="hash">#</span> threat_intelligence &amp; analysis</h3>
+      <div class="tags">
+        <span>OSINT</span><span>Cortex XSOAR</span><span>Threat-Actor Profiling</span><span>Attribution</span><span>IOC Research &amp; Enrichment</span><span>Finished Intelligence</span><span>Dark Web &amp; DLS Monitoring</span><span>Brand Monitoring</span><span>Browser-Extension Hunting</span><span>Exec Digital-Footprint Assessment</span><span>Structured Analytic Techniques</span><span>OPSEC</span>
+      </div>
+    </div>
+    <div class="skillcard">
+      <h3><span class="hash">#</span> intel_platforms</h3>
+      <div class="tags">
+        <span>Recorded Future</span><span>ThreatConnect</span><span>CrowdStrike</span><span>Flashpoint</span><span>Proofpoint</span><span>DomainTools</span><span>Shodan</span><span>VirusTotal</span><span>URLScan</span><span>Qualys</span><span>HackerOne</span>
+      </div>
+    </div>
+    <div class="skillcard">
+      <h3><span class="hash">#</span> active_directory &amp; exploitation</h3>
+      <div class="tags">
+        <span>Kerberoasting</span><span>AS-REP Roasting</span><span>Pass-the-Hash</span><span>Pass-the-Ticket</span><span>ZeroLogon</span><span>AD Enumeration</span><span>Lateral Movement</span><span>Privilege Escalation</span>
+      </div>
+    </div>
+    <div class="skillcard">
+      <h3><span class="hash">#</span> offensive &amp; red_team tools</h3>
+      <div class="tags">
+        <span>Mythic C2</span><span>Cobalt Strike</span><span>Metasploit</span><span>Burp Suite</span><span>SQLMap</span><span>BloodHound</span><span>Impacket</span><span>CrackMapExec</span><span>Evil-WinRM</span><span>Rubeus</span><span>Mimikatz</span><span>Kerbrute</span><span>Responder</span><span>Ligolo</span><span>Nmap</span><span>Nessus</span><span>Kali Linux</span>
+      </div>
+    </div>
+    <div class="skillcard">
+      <h3><span class="hash">#</span> programming</h3>
+      <div class="tags">
+        <span>Python</span><span>PowerShell</span><span>Bash</span><span>Java</span><span>C/C++</span><span>Go</span><span>MIPS Assembly</span><span>R</span><span>PHP</span>
+      </div>
+    </div>
+    <div class="skillcard">
+      <h3><span class="hash">#</span> frameworks</h3>
+      <div class="tags">
+        <span>MITRE ATT&amp;CK</span><span>Diamond Model</span><span>Cyber Kill Chain</span><span>NIST CSF</span><span>Risk Management</span><span>OWASP Top 10</span><span>SDLC</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CERTS + EDUCATION -->
+<section id="credentials">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> cat <span class="arg">credentials.txt</span></span>
+    <h2>// certifications &amp; education</h2>
+  </div>
+  <div class="two-col">
+    <div>
+      <p class="col-label mono"><span class="hash">#</span> certifications</p>
+      <div class="cert-legend mono">
+        <span class="lg-off"><i></i>Offensive / Red Team</span>
+        <span class="lg-net"><i></i>Networking</span>
+        <span class="lg-cloud"><i></i>Cloud</span>
+        <span class="lg-gen"><i></i>Foundational</span>
+      </div>
+      <div class="cert-grid">
+        <div class="cbadge offensive"><div class="hex"><span class="ac">OSCP+</span></div><div><div class="nm">OSCP+</div><div class="iss">Offensive Security Certified Professional Plus</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge offensive"><div class="hex"><span class="ac">CRTO</span></div><div><div class="nm">CRTO</div><div class="iss">Certified Red Team Operator · Zero-Point Security</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge network"><div class="hex"><span class="ac">CCNA</span></div><div><div class="nm">CCNA</div><div class="iss">Cisco Certified Network Associate</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge cloud"><div class="hex"><span class="ac">AWS</span></div><div><div class="nm">AWS CCP</div><div class="iss">AWS Certified Cloud Practitioner</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge general"><div class="hex"><span class="ac">SEC+</span></div><div><div class="nm">CompTIA Security+</div><div class="iss">CompTIA · foundational</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge offensive"><div class="hex"><span class="ac">HTB</span></div><div><div class="nm">HackTheBox Dante</div><div class="iss">Pro Labs completion · offensive</div><div class="st">▸ ACTIVE</div></div></div>
+        <div class="cbadge offensive prog"><div class="hex"><span class="ac">OSEP</span></div><div><div class="nm">OSEP</div><div class="iss">Offensive Security Experienced Penetration Tester</div><div class="st">◷ IN PROGRESS</div></div></div>
+      </div>
+    </div>
+    <div>
+      <p class="col-label mono"><span class="hash">#</span> education</p>
+      <div class="edu-list">
+        <div class="edu">
+          <div class="crest">GT</div>
+          <div>
+            <div class="school">Georgia Institute of Technology</div>
+            <div class="deg">M.S. — Cybersecurity</div>
+            <div class="when">2025 — 2027</div>
+            <div class="course">Coursework: <b>Binary Exploitation, Web Security, API Security, Malware Analysis</b></div>
+          </div>
+        </div>
+        <div class="edu">
+          <div class="crest">CPP</div>
+          <div>
+            <div class="school">California State Polytechnic University, Pomona</div>
+            <div class="deg">B.S. — Computer Science</div>
+            <div class="when">2021 — 2024</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /wrap -->
+
+<!-- CONTACT -->
+<div class="wrap">
+<section id="contact" class="contact">
+  <div class="sec-head">
+    <span class="cmd mono"><span class="ps">$</span> ./connect <span class="arg">--now</span></span>
+    <h2>// get in touch</h2>
+  </div>
+  <div class="contact-term">
+    <div class="term-bar">
+      <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+      <span class="term-title">jimmy@peng: ~/contact</span>
+    </div>
+    <div class="contact-body">
+      <p class="ln"><span class="ps">jimmy@peng</span>:~$ whoami --reach</p>
+      <p class="out">Open to roles in threat intelligence, red team, and security engineering.</p>
+      <p class="out">U.S. Citizen · Clearance-Eligible · pursuing OSEP.</p>
+      <div class="contact-cta">
+        <a href="mailto:jcpeng@dinlow.com"><span class="g">✉</span> jcpeng@dinlow.com</a>
+        <a href="https://www.linkedin.com/in/jimmy-peng-cyber" target="_blank" rel="noopener"><span class="g">in</span> /in/jimmy-peng-cyber</a>
+        <a href="https://github.com/JPen8899" target="_blank" rel="noopener"><span class="g">&gt;_</span> github.com/JPen8899</a>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap foot-inner">
+    <span>© <span id="year"></span> Jimmy Peng — built &amp; deployed on GitHub Pages.</span>
+    <span><a href="https://www.linkedin.com/in/jimmy-peng-cyber" target="_blank" rel="noopener">LinkedIn</a> · <a href="https://github.com/JPen8899" target="_blank" rel="noopener">GitHub</a> · <a href="mailto:jcpeng@dinlow.com">Email</a></span>
+  </div>
+</footer>
+
+<script>
+  // ---- Hero typewriter: single animation, accessibility-aware ----
+  (function(){
+    var el = document.getElementById('typed');
+    var caret = document.getElementById('caret');
+    var phrases = ['whoami', 'cat ~/profile/role.txt', 'sudo ./hire_me.sh'];
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ el.textContent = 'whoami'; return; }
+    var p = 0, i = 0, deleting = false;
+    function tick(){
+      var word = phrases[p];
+      el.textContent = deleting ? word.slice(0, i--) : word.slice(0, i++);
+      var delay = deleting ? 45 : 95;
+      if(!deleting && i > word.length){ deleting = false; i = word.length; setTimeout(function(){ deleting = true; tick(); }, 1500); return; }
+      if(deleting && i < 0){ deleting = false; i = 0; p = (p+1) % phrases.length; setTimeout(tick, 350); return; }
+      setTimeout(tick, delay);
+    }
+    tick();
+  })();
+
+  // ---- Mobile nav ----
+  (function(){
+    var t = document.getElementById('navToggle'), n = document.getElementById('navLinks');
+    if(!t) return;
+    t.addEventListener('click', function(){ n.classList.toggle('open'); });
+    n.addEventListener('click', function(e){ if(e.target.tagName === 'A') n.classList.remove('open'); });
+  })();
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+</body>
 </html>
